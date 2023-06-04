@@ -1,14 +1,8 @@
 
+2023-06-04 Daily Backup into Git added as Automation
 2023-06-04 Configured GIT
-            https://diy-smarthome.com/how-to-set-up-git-to-version-control-your-home-assistant-configuration/
-            https://community.home-assistant.io/t/git-push-setup-with-ssh-key-issue/227978/11
-            https://peyanski.com/automatic-home-assistant-backup-to-github/
-                cd /config
-                git config core.sshCommand 'ssh -o UserKnownHostsFile=/config/.ssh/known_hosts -i /config/.ssh/id_git -F /dev/null'
-                git add .
-                # Commit changes with message with current date stamp
-                git commit -m "config files on `date +'%d-%m-%Y %H:%M:%S'`"
-
+    https://community.home-assistant.io/t/git-push-setup-with-ssh-key-issue/227978/11
+    https://peyanski.com/automatic-home-assistant-backup-to-github/
 2023-06-04 Installed HACS
 2023-06-04 Installed SSH Addon
 2023-06-04 Deployed OVF File into ESXi - HA-Tesla
