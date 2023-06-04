@@ -13,3 +13,6 @@ tts:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+shell_command:
+  push_to_github: cd /config && bash ./gitpush.sh
