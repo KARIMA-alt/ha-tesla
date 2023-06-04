@@ -2,7 +2,7 @@
 2023-06-04 Configured GIT
             https://diy-smarthome.com/how-to-set-up-git-to-version-control-your-home-assistant-configuration/
             https://community.home-assistant.io/t/git-push-setup-with-ssh-key-issue/227978/11
-
+            https://peyanski.com/automatic-home-assistant-backup-to-github/
                 cd /config
                 git config core.sshCommand 'ssh -o UserKnownHostsFile=/config/.ssh/known_hosts -i /config/.ssh/id_git -F /dev/null'
                 git add .
