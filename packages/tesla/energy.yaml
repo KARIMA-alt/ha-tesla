@@ -1,1 +1,133 @@
-## Tesla Energy Consumption.
+## Energy Consumption
+
+## Map Correct entities to below sensors
+
+
+
+template:
+  ## Power in Watts Consumed from the Grid
+  - sensor:
+      - name: tesla.energy.grid.powerconsumption
+        unique_id: 4dc2e159-0515-406b-a9e1-8dbfad5662f9
+        unit_of_measurement: 'W'
+        icon: mdi:transmission-tower-export
+        state: >
+          {{ states('sensor.smartmeter_power_consumption') | float(0) }}
+  ## Power in Watts Delivered to the Grid
+  - sensor:
+      - name: tesla.energy.grid.powerproduction
+        unique_id: 513443c3-f021-4619-8f4e-236b9a20abc8
+        unit_of_measurement: 'W'
+        icon: mdi:transmission-tower-import
+        state: >
+          {{ states('sensor.smartmeter_power_production') | float(0) }}  
+  ## Powerflow in Watts. Negative returned to the grid
+  - sensor:
+      - name: tesla.energy.grid.powerflow
+        unique_id: 93bb7590-3def-42f6-9ed3-f3382b16221d
+        unit_of_measurement: 'W'
+        icon: mdi:lightning-bolt-circle
+        state: >
+          {% if states('sensor.tesla_energy_grid_powerproduction') | float(0) > 0 %}
+            {{ states('sensor.tesla_energy_grid_powerproduction') | float(0) * -1 }}
+          {% else %}
+            {{ states('sensor.tesla_energy_grid_powerconsumption') | float(0) }}
+          {% endif %}
+  ## Solar Power in Watts Delivered
+  - sensor:
+      - name: tesla.energy.solar.powerproduction
+        unique_id: eeb493d4-4631-45a7-81b4-86ef1c8f9360
+        unit_of_measurement: 'W'
+        icon: mdi:solar-power
+        state: >
+          {{ states('sensor.solaredge_current_power') | float(0) }}
+  ## Get Charging power from Tesla instead of TeslaHouseCharger
+  - sensor:
+    - name: tesla.energy.added
+      unique_id: befb6adb-a77a-4555-aab9-d1a0fe288c67
+      unit_of_measurement: 'kWh'
+      icon: mdi:ev-station
+      state: >
+        {{ states('sensor.evie_energy_added') | float(0) }}
+  - sensor:
+    ## Wallbox energy counter is in Wh
+    - name: tesla.energy.wallbox.added
+      unique_id: acd115b6-1488-4dea-a0b0-e5491809bc36
+      unit_of_measurement: 'kWh'
+      icon: mdi:ev-station
+      state: >
+        {{ states('sensor.tesla_wall_connector_energy') | float(0) / 1000 }}
+
+  ## in this example the energy meter of solar panel is used
+  ##- sensor:
+  ##    - name: tesla.energy.solar.powerproduction_kwh
+  ##      unique_id: 8ad75b29-e1b1-4077-b2e0-fb52a0dd759c
+  ##      unit_of_measurement: 'kWh'
+  ##      icon: mdi:solar-power
+  ##      state: >
+  ##        {{ states('sensor.solaredge_lifetime_energy') | float(0) }} 
+
+sensor:
+    ## I have choses to use the power as opposed to energy meter for different components to make more flexibie.
+    ## Add a template sensor reffering to the energy meter if you wish to use that instead. 
+    ## See expample above
+    - platform: integration
+      source: sensor.tesla_energy_grid_powerconsumption
+      method: left
+      unit_prefix: k
+      name: tesla.energy.grid.powerconsumption_kwh
+      unique_id: 371ca207-ae68-4c70-a8d7-0f6a06b3bbb6
+    - platform: integration
+      source: sensor.tesla_energy_grid_powerproduction
+      method: left
+      unit_prefix: k
+      name: tesla.energy.grid.powerproduction_kwh
+      unique_id: 4a236c2e-bda3-4729-b0e0-6f3fb2bf8a30
+    - platform: integration
+      source: sensor.tesla_energy_solar_powerproduction
+      method: left
+      unit_prefix: k
+      name: tesla.energy.solar.powerproduction_kwh
+      unique_id: a4431537-21f1-4257-b882-ef53d31cee34
+
+utility_meter:
+  tesla_energy_grid_consumption_daily:
+    source: sensor.tesla_energy_grid_powerconsumption_kwh
+    name: Tesla Grid Consumption Daily
+    unique_id: c224128f-bb3a-4acc-9db1-9e223744dd64
+    cycle: daily
+  tesla_energy_grid_consumption_hourly:
+    source: sensor.tesla_energy_grid_powerconsumption_kwh
+    name: Tesla Grid Consumption Hourly
+    unique_id: 3076747e-fb63-4ce7-865e-7788a4f5ba20
+    cycle: hourly
+  tesla_energy_grid_production_daily:
+    source: sensor.tesla_energy_grid_powerproduction_kwh
+    name: Tesla Grid Production Daily
+    unique_id: 6536d56c-96e2-4a94-ba09-446483de76c6
+    cycle: daily
+  tesla_energy_grid_production_hourly:
+    source: sensor.tesla_energy_grid_powerproduction_kwh
+    name: Tesla Grid Production Hourly
+    unique_id: 589c5d2c-45b5-4d67-88be-90d2eab739ab
+    cycle: hourly
+  tesla_energy_solar_production_daily:
+    source: sensor.tesla_energy_solar_powerproduction_kwh
+    name: Tesla Solar Production Daily
+    unique_id: b09eb9ea-d044-4ba3-b0c4-c26118fcb0a7
+    cycle: daily
+  tesla_energy_solar_production_hourly:
+    source: sensor.tesla_energy_solar_powerproduction_kwh
+    name: Tesla Solar Production Hourly
+    unique_id: 8a75c1d7-bbdb-4878-9dd1-176d7d4f8a89
+    cycle: hourly
+  tesla_charge_added_hourly:
+    source: sensor.tesla_wallbox_energy_added
+    name: Tesla Energy Added Hourly
+    unique_id: 3db90137-66bd-4b66-81e2-fdbbb547b2a0
+    cycle: hourly
+  tesla_charge_added_daily:
+    source: sensor.tesla_wallbox_energy_added
+    name: Tesla Energy Added Daily
+    unique_id: fa2825d6-9bfd-41a7-b85a-bd896a4e917b
+    cycle: hourly
