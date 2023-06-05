@@ -10,7 +10,7 @@
 !*.js*
 !wiki.txt
 !changelog.txt
-!packages/
+!packages/tesla
 !input_number
 
 # Comment these 2 lines if you don't want to include your SSH keys
@@ -26,6 +26,13 @@
 .cloud
 .google.token 
 home-assistant.log
+gitpush.sh
+configuration.yaml
+scenes.yaml
+scripts.yaml
+wiki.txt
+changelog.txt
+automations.yaml
 
 # Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
 ip_bans.yaml
