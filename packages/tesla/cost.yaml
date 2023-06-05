@@ -1,0 +1,82 @@
+template:
+  ## Cost Power Consumed from Grid
+  - sensor:
+      - name: tesla.cost.grid.powerconsumption
+        unique_id: 5f3d832a-4f73-481f-a0cd-f3525a5ae826
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {{ states('sensor.tesla_grid_consumption_hourly') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) }}
+  ## Cost Power Delivered to Grid
+  - sensor:
+      - name: tesla.cost.grid.powerproduction
+        unique_id: 5f3d832a-4f73-481f-a0cd-f3525a5ae826
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {{ states('sensor.tesla_grid_production_hourly') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) * -1 }}
+  - sensor:
+      - name: tesla.cost.solar.powerproduction
+        unique_id: 5f3d832a-4f73-481f-a0cd-f3525a5ae826
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {{ states('sensor.tesla_grid_production_hourly') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) * -1 }}
+  ## Cost Power Consumed from Grid
+  - sensor:
+      - name: tesla.cost.charge.added
+        unique_id: 5f3d832a-4f73-481f-a0cd-f3525a5ae826
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {{ states('sensor.tesla_charge_added_hourly') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) }}
+  - sensor:
+      - name: tesla.cost.charge.added.minus.solar
+        unique_id: 03583f2c-2e45-4837-b7c8-657fe384d879
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {{ (states('sensor.tesla_charge_added_hourly') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0)) 
+            - (states('sensor.tesla_grid_production_hourly') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0))
+          }}
+  - sensor:
+      - name: tesla.cost.price.per.km
+        unique_id: de7e23b0-2aa9-464d-81ec-581eb3ff37ad
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {% set WhperKM = 119 %}
+          {% set EnergyAdded = states('sensor.tesla_charge_added_hourly') | float(0) %}
+          {% set kmAdded = EnergyAdded / WhperKM / 1000  %}
+          {% set Cost = states('sensor.tesla_charge_added_hourly') | float(0) *
+                        states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) %}
+          {% if kmAdded > 0 %}  
+            {{ Cost / kmAdded }}
+          {% else %}
+            0
+          {% endif %}
+  - sensor:
+      - name: tesla.cost.price.per.km.min.solar
+        unique_id: 892dd597-54ad-4f04-a34a-10382442d6c6
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {% set WhperKM = 119 %}
+          {% set EnergyAdded = states('sensor.tesla_charge_added_hourly') | float(0) %}
+          {% set kmAdded = EnergyAdded / WhperKM / 1000  %}
+          {% set Cost = ( states('sensor.tesla_charge_added_hourly') | float(0) *
+                          states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0)) 
+                        - (states('sensor.tesla_grid_production_hourly') | float(0) *
+                          states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0))
+                         %}
+          {% if kmAdded > 0 %}  
+            {{ Cost / kmAdded }}
+          {% else %}
+            0
+          {% endif %}
