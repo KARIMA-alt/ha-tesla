@@ -1,7 +1,7 @@
 template:
   ## Cost Power Consumed from Grid
   - sensor:
-      - name: tesla.cost.grid.powerconsumption
+      - name: tesla.cost.grid.powerconsumption_hourly
         unique_id: 5f3d832a-4f73-481f-a0cd-f3525a5ae826
         unit_of_measurement: 'EUR'
         icon: mdi:currency-eur
@@ -10,7 +10,7 @@ template:
             states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) }}
   ## Cost Power Delivered to Grid
   - sensor:
-      - name: tesla.cost.grid.powerproduction
+      - name: tesla.cost.grid.powerproduction_hourly
         unique_id: 5f3d832a-4f73-481f-a0cd-f3525a5ae826
         unit_of_measurement: 'EUR'
         icon: mdi:currency-eur
@@ -18,7 +18,7 @@ template:
           {{ states('sensor.tesla_grid_production_hourly') | float(0) *
             states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) * -1 }}
   - sensor:
-      - name: tesla.cost.solar.powerproduction
+      - name: tesla.cost.solar.powerproduction_hourly
         unique_id: 5f3d832a-4f73-481f-a0cd-f3525a5ae826
         unit_of_measurement: 'EUR'
         icon: mdi:currency-eur
@@ -27,7 +27,7 @@ template:
             states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) * -1 }}
   ## Cost Power Consumed from Grid
   - sensor:
-      - name: tesla.cost.charge.added
+      - name: tesla.cost.charge.added_hourly
         unique_id: 5f3d832a-4f73-481f-a0cd-f3525a5ae826
         unit_of_measurement: 'EUR'
         icon: mdi:currency-eur
@@ -35,7 +35,7 @@ template:
           {{ states('sensor.tesla_charge_added_hourly') | float(0) *
             states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) }}
   - sensor:
-      - name: tesla.cost.charge.added.minus.solar
+      - name: tesla.cost.charge.added.minus.solar_hourly
         unique_id: 03583f2c-2e45-4837-b7c8-657fe384d879
         unit_of_measurement: 'EUR'
         icon: mdi:currency-eur
@@ -45,6 +45,57 @@ template:
             - (states('sensor.tesla_grid_production_hourly') | float(0) *
             states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0))
           }}
+
+## Daily
+  ## Cost Power Consumed from Grid
+  - sensor:
+      - name: tesla.cost.grid.powerconsumption_daily
+        unique_id: 479540f0-7820-4777-b4e6-93bb5b1db531
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {{ states('sensor.tesla_grid_consumption_daily') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) }}
+  ## Cost Power Delivered to Grid
+  - sensor:
+      - name: tesla.cost.grid.powerproduction_daily
+        unique_id: 6c29a81e-87a9-457c-a240-c9c63060e02d
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {{ states('sensor.tesla_grid_production_daily') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) * -1 }}
+  - sensor:
+      - name: tesla.cost.solar.powerproduction_daily
+        unique_id: 526e19cd-13aa-41a9-bcd5-4828b1559c36
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {{ states('sensor.tesla_grid_production_daily') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) * -1 }}
+  ## Cost Power Consumed from Grid
+  - sensor:
+      - name: tesla.cost.charge.added_daily
+        unique_id: 070a5b95-66b9-4008-853b-d874b269e54b
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {{ states('sensor.tesla_charge_added_daily') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0) }}
+  - sensor:
+      - name: tesla.cost.charge.added.minus.solar_daily
+        unique_id: 4d2a726d-01a2-4216-9363-35f3f7cddf32
+        unit_of_measurement: 'EUR'
+        icon: mdi:currency-eur
+        state: >
+          {{ (states('sensor.tesla_charge_added_daily') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0)) 
+            - (states('sensor.tesla_grid_production_daily') | float(0) *
+            states('sensor.nordpool_kwh_nl_eur_3_10_021') | float(0))
+          }}
+
+
+
   - sensor:
       - name: tesla.cost.price.per.km
         unique_id: de7e23b0-2aa9-464d-81ec-581eb3ff37ad
