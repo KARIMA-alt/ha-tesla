@@ -8,10 +8,7 @@
 !*.md
 !*.sh
 !*.js*
-!wiki.txt
-!changelog.txt
 !packages/tesla
-!input_number
 
 # Comment these 2 lines if you don't want to include your SSH keys
 #!.ssh/
