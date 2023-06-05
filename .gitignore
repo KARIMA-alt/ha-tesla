@@ -24,7 +24,7 @@
 .google.token 
 home-assistant.log
 gitpush.sh
-configurations.yaml
+configuration.yaml
 scenes.yaml
 scripts.yaml
 wiki.txt
